@@ -13,7 +13,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     vmconfig.vm.hostname = "server-01"
     vmconfig.vm.box = "ubuntu/disco64"
     vmconfig.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "256"]
+      vb.customize ["modifyvm", :id, "--memory", "1024"]
       vb.customize ["modifyvm", :id, "--cpus", "1"]
       # vb.customize ["modifyvm", :id, "--ioapic", "on"]
       vb.customize ["modifyvm", :id, "--cpuexecutioncap", "100"]
