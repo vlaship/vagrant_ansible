@@ -1,0 +1,8 @@
+---
+# This playbook would deploy server-01.
+
+- hosts: all
+  user: vagrant
+  become: yes
+  roles:
+  - role: common
