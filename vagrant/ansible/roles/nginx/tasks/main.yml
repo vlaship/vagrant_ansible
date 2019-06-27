@@ -1,4 +1,4 @@
-- name: all
+- name: nginx
   tasks:
     - import_tasks: install.yml
     - import_tasks: run.yml
