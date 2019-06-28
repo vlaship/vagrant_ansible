@@ -1,0 +1,63 @@
+---
+
+- name: Installing MySQL-python
+  apt:
+    name: python-mysqldb
+    state: latest
+
+- name: Install the MySQL packages
+  apt:
+    name: mysql-server
+    state: latest
+    update_cache: yes    
+
+# - name: Install the MySQL packages
+#   apt:
+#     name: "mysql-server"
+#     state: installed
+#     update_cache: yes
+
+# Create database user with name 'bob' and password '12345' with all database privileges
+- mysql_user:
+    name: root
+    password: root
+    host: '%'
+    state: present
+
+- name: Update MySQL root password for all root accounts 
+  mysql_user:
+    name: root
+    host: "{{ item }}"
+    password: "root"
+    state: present
+  with_items:
+    - localhost
+
+- name: Copy the templates to their respective destination
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root 
+    group: root 
+    mode: "{{ item.mode | default(644) }}"
+  with_items:
+    - { src: 'mysqld.cnf', dest: '/etc/mysql/mysql.conf.d/mysqld.cnf' }
+    # - { src: 'root.cnf.j2', dest: '~/.my.cnf', mode: '600' }
+  notify:
+    - Restart MySQL
+
+- name: Ensure Anonymous user(s) are not in the database
+  mysql_user:
+    name: ''
+    host: "{{ item }}"
+    state: absent
+  with_items:
+    - localhost
+    - "server-02"
+ 
+- name: Remove the test database
+  mysql_db:
+    name: test
+    state: absent
+  notify:
+    - Restart MySQL 
